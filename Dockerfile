@@ -6,4 +6,4 @@ RUN chmod +x /page-check.py
 
 ENV PYTHONUNBUFFERED=0
 
-CMD ["sh", "-c", "PYTHONUNBUFFERED=0 /page-check.py $OPTIONS"]
+CMD ["sh", "-c", "PYTHONUNBUFFERED=0 eval /page-check.py $OPTIONS"]
