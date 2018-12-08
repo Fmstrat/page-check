@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from urllib import urlopen
+import urllib2
 import smtplib
 import sys
 import argparse
@@ -38,7 +38,8 @@ while True:
     else:
         printD("Checking for absense of '" + args.string + "' on " + args.url, 0)
     needle = args.string
-    haystack = urlopen(args.url).read()
+    req = urllib2.Request(args.url, headers={ 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:63.0) Gecko/20100101 Firefox/63.0' })
+    haystack = urllib2.urlopen(req).read()
 
     if args.insensitive:
         needle = needle.lower()
