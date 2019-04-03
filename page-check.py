@@ -6,6 +6,8 @@ import sys
 import argparse
 import time
 import datetime
+import httplib
+import urllib
 
 def printD(string, indent):
     strindent = ""
@@ -23,6 +25,8 @@ parser.add_argument('-o', '--interval', help='The interval in minutes between ch
 parser.add_argument('-r', '--reverse', help='Tells page-check to alerg when the string does not exist', default='', action='store_true')
 parser.add_argument('-i', '--insensitive', help='Make the comparison case insensitive', default='', action='store_true')
 parser.add_argument('-n', '--noexit', help='Do not exit once the change is detected', default='', action='store_true')
+parser.add_argument('-y', '--pushoverapi', help='The pushover.net API key', default='')
+parser.add_argument('-z', '--pushoveruser', help='The pushover.net user key', default='')
 requiredArguments = parser.add_argument_group('required arguments')
 requiredArguments.add_argument('-s', '--smtpserver', help='The SMTP server:port', required=True)
 requiredArguments.add_argument('-f', '--smtpfrom', help='The FROM email address', required=True)
@@ -58,6 +62,17 @@ while True:
             server.login(args.smtpuser, args.smtppass)
         server.sendmail(args.smtpfrom, args.smtpto, message)
         server.quit()
+        if args.pushoverapi != '' and args.pushoveruser != '':
+            printD("Sending Pushover message",2)
+            conn = httplib.HTTPSConnection("api.pushover.net:443")
+            conn.request("POST", "/1/messages.json",
+                urllib.urlencode({
+                    "token": args.pushoverapi,
+                    "user": args.pushoveruser,
+                    "message": message,
+                    "sound": "falling",
+                }), { "Content-type": "application/x-www-form-urlencoded" })
+            conn.getresponse()
         if not args.noexit:
             sys.exit(0)
     else:
