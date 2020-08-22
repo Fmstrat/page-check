@@ -43,43 +43,49 @@ while True:
         printD("Checking for absense of '" + args.string + "' on " + args.url, 0)
     needle = args.string
     req = urllib2.Request(args.url, headers={ 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:63.0) Gecko/20100101 Firefox/63.0' })
-    haystack = urllib2.urlopen(req).read()
+    success = False
+    try:
+        haystack = urllib2.urlopen(req).read()
+        success = True
+    except:
+        printD("Error connecting to site.", 0)
+    if success:
+        if args.insensitive:
+            needle = needle.lower()
+            haystack = haystack.lower()
 
-    if args.insensitive:
-        needle = needle.lower()
-        haystack = haystack.lower()
-
-    if (not args.reverse and needle in haystack) or (args.reverse and needle not in haystack):
-        if not args.reverse:
-            printD("String found", 2)
+        if (not args.reverse and needle in haystack) or (args.reverse and needle not in haystack):
+            if not args.reverse:
+                printD("String found", 2)
+            else:
+                printD("String not found", 2)
+            message = "Subject: " + args.smtpsubject + "\n\n"
+            message = message + args.url
+            server = smtplib.SMTP(args.smtpserver)
+            server.starttls()
+            if args.smtpuser != '' and args.smtppass != '':
+                server.login(args.smtpuser, args.smtppass)
+            server.sendmail(args.smtpfrom, args.smtpto, message)
+            server.quit()
+            if args.pushoverapi != '' and args.pushoveruser != '':
+                printD("Sending Pushover message",2)
+                conn = httplib.HTTPSConnection("api.pushover.net:443")
+                conn.request("POST", "/1/messages.json",
+                    urllib.urlencode({
+                        "token": args.pushoverapi,
+                        "user": args.pushoveruser,
+                        "message": message,
+                        "sound": "falling",
+                    }), { "Content-type": "application/x-www-form-urlencoded" })
+                conn.getresponse()
+            if not args.noexit:
+                sys.exit(0)
         else:
-            printD("String not found", 2)
-        message = "Subject: " + args.smtpsubject + "\n\n"
-        message = message + args.url
-        server = smtplib.SMTP(args.smtpserver)
-        server.starttls()
-        if args.smtpuser != '' and args.smtppass != '':
-            server.login(args.smtpuser, args.smtppass)
-        server.sendmail(args.smtpfrom, args.smtpto, message)
-        server.quit()
-        if args.pushoverapi != '' and args.pushoveruser != '':
-            printD("Sending Pushover message",2)
-            conn = httplib.HTTPSConnection("api.pushover.net:443")
-            conn.request("POST", "/1/messages.json",
-                urllib.urlencode({
-                    "token": args.pushoverapi,
-                    "user": args.pushoveruser,
-                    "message": message,
-                    "sound": "falling",
-                }), { "Content-type": "application/x-www-form-urlencoded" })
-            conn.getresponse()
-        if not args.noexit:
-            sys.exit(0)
-    else:
-        if not args.reverse:
-            printD("String not found", 2)
-        else:
-            printD("String found", 2)
+            if not args.reverse:
+                printD("String not found", 2)
+            else:
+                printD("String found", 2)
+        
 
     printD("Waiting " + str(args.interval) + " minutes for next check.", 0)
     time.sleep(args.interval * 60)
