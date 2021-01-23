@@ -1,0 +1,11 @@
+{
+    "name": "page-check",
+    "version": "1.0.0",
+    "description": "A page checker",
+    "main": "index.js",
+    "author": "Fmstrat",
+    "license": "UNLICENSED",
+    "dependencies": {
+        "node-pushover": "^1.0.0"
+    }
+}
