@@ -35,14 +35,23 @@ requiredArguments.add_argument('-w', '--url', help='The URL to monitor', require
 requiredArguments.add_argument('-m', '--string', help='The string to watch for', required=True)
 args = parser.parse_args()
 
+pageHeaders = {
+    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) Gecko/20100101 Firefox/84.0',
+    'Upgrade-Insecure-Requests': '1',
+    'Accept-Encoding': 'gzip, deflate, sdch, br',
+    'Connection': 'keep-alive',
+    'Cache-Control': 'max-age=0',
+    'Accept-Language': 'en-US,en;q=0.8,pt;q=0.6',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+}
 
 while True:
     if not args.reverse:
         printD("Checking for '" + args.string + "' on " + args.url, 0)
     else:
-        printD("Checking for absense of '" + args.string + "' on " + args.url, 0)
+        printD("Checking for absence of '" + args.string + "' on " + args.url, 0)
     needle = args.string
-    req = urllib2.Request(args.url, headers={ 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:63.0) Gecko/20100101 Firefox/63.0' })
+    req = urllib2.Request(args.url, headers=pageHeaders)
     success = False
     try:
         haystack = urllib2.urlopen(req).read()
