@@ -22,21 +22,29 @@ async function checkPage(check) {
     let web = await c.getPage(page);
     if (check.reverse) {
         console.log(`Checking if "${check.url}" does not include "${check.string}":`)
-        if (!web.body.includes(check.string)) {
-            console.log("  String is missing now - Sending Pushover")
-            check.alerted = true;
-            push.send("Page Check", check.url);
-        } else {
-            console.log("  String exists")
+        try {
+            if (!web.body.includes(check.string)) {
+                console.log("  String is missing now - Sending Pushover")
+                check.alerted = true;
+                push.send("Page Check", check.url);
+            } else {
+                console.log("  String exists")
+            }
+        } catch (e) {
+            console.log(e);
         }
     } else {
-        console.log(`Checking if "${check.url}" includes "${check.string}":`)
-        if (!web.body.includes(check.string)) {
-            console.log("  String does not exist")
-        } else {
-            console.log("  String was found - Sending Pushover")
-            check.alerted = true;
-            push.send("Page Check", check.url);
+        try {
+            console.log(`Checking if "${check.url}" includes "${check.string}":`)
+            if (!web.body.includes(check.string)) {
+                console.log("  String does not exist")
+            } else {
+                console.log("  String was found - Sending Pushover")
+                check.alerted = true;
+                push.send("Page Check", check.url);
+            }
+        } catch (e) {
+            console.log(e);
         }
     }
 }
