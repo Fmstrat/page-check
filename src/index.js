@@ -17,12 +17,12 @@ const push = new Pushover({
 });
 
 async function checkPage(check) {
-    let c = new Common();
-    await page.goto(check.url);
-    let web = await c.getPage(page);
-    if (check.reverse) {
-        console.log(`Checking if "${check.url}" does not include "${check.string}":`)
-        try {
+    try {
+        let c = new Common();
+        await page.goto(check.url);
+        let web = await c.getPage(page);
+        if (check.reverse) {
+            console.log(`Checking if "${check.url}" does not include "${check.string}":`)
             if (!web.body.includes(check.string)) {
                 console.log("  String is missing now - Sending Pushover")
                 check.alerted = true;
@@ -30,11 +30,7 @@ async function checkPage(check) {
             } else {
                 console.log("  String exists")
             }
-        } catch (e) {
-            console.log(e);
-        }
-    } else {
-        try {
+        } else {
             console.log(`Checking if "${check.url}" includes "${check.string}":`)
             if (!web.body.includes(check.string)) {
                 console.log("  String does not exist")
@@ -43,9 +39,9 @@ async function checkPage(check) {
                 check.alerted = true;
                 push.send("Page Check", check.url);
             }
-        } catch (e) {
-            console.log(e);
         }
+    } catch (e) {
+        console.log(e);
     }
 }
 
