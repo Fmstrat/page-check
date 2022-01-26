@@ -6,9 +6,6 @@ let checks = JSON.parse(process.env.CHECKS);
 let pushoverApi = process.env.PUSHOVERAPI;
 let pushoverUser = process.env.PUSHOVERUSER;
 let intervalMin = process.env.INTERVALMIN;
-let smtpServer = process.env.SMTPSERVER;
-let smtpFrom = process.env.SMTPFROM;
-let smtpTo = process.env.SMTPTO;
 
 let page;
 const push = new Pushover({

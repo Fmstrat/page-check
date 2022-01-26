@@ -1,5 +1,5 @@
 # page-check
-Watches a web page and sends an email when a string is detected (or not).
+Watches a web page and sends a Pushover notification when a string is detected (or not).
 
 ***Please see the `python` branch for the original python version.***
 
@@ -32,8 +32,5 @@ Page Check will stop checking a page once an alert has fired.
       # Either Pushover or SMTP alerts can be used
       PUSHOVERAPI: '<redacted>'         # Optional Pushover API key
       PUSHOVERUSER: '<redacted>'        # Optional Pushover API user
-      SMTPSERVER: '<server>:<port>'     # Optional SMTP server and port
-      SMTPFROM: '<user>@<domain>.<ext>' # Optional email address an email will come from
-      SMTPTO: '<user>@<domain>.<ext>'   # Optional email address that will recieve the email
     restart: "always"
 ```
